@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link
+    href="https://cdn.jsdelivr.net/npm/remixicon@4.5.0/fonts/remixicon.css"
+    rel="stylesheet"
+/>
+    <title>Document</title>
+</head>
+<body>
+    <div id="maim">
+        
+
+        
+        
+        <nav>
+            <a href="index.html"><img src="logo.png.png" id="img" height="50px" width="140px"></a>
+            <a href="">Electronic</a>
+            <a href="">Robotics</a>
+            <a href="">Prototyping</a>
+            <a href="">Brand</a>
+            <a href="">Hardware</a>
+            <a href="">RC planes & Drone</a>
+            <a href="">Arts & Craft</a>
+            <a href="">Home & outdore</a>
+            <a href="">maker sewage</a>
+            <a href="barcode_scanner.html"><i class="ri-barcode-box-line"></i></a>
+            <i class="ri-search-line"></i>
+            <i class="ri-account-circle-line"></i>
+            <i class="ri-shopping-bag-4-line"></i>
+            
+
+            
+        </nav>
+        
+    </div>
+
+    <script src="script.js"></script>
+    
+</body>
+</html>
+
+
+
+
+
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Barcode Scanner</title>
+    <style>
+        /* Optional styling to make the scanner video appear full-screen */
+        #scanner-container {
+            width: 100%;
+            height: 400px;
+            position: relative;
+        }
+        #scanner-container video {
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+</head>
+<body>
+    <h1>Barcode Scanner</h1>
+
+    <!-- Scanner container -->
+    <div id="scanner-container">
+        <video id="scanner-video" width="100%" height="100%" autoplay></video>
+    </div>
+    
+    <h2>Barcode Result:<a href=""> <span id="barcode-result"></a></span></h2>
+
+    <!-- Include QuaggaJS library -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/quagga/0.12.1/quagga.min.js"></script>
+
+    <script>
+        // Initialize the Quagga barcode scanner
+        function initScanner() {
+            // Start the video stream from webcam
+            if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
+                navigator.mediaDevices.getUserMedia({ video: { facingMode: "environment" } })
+                    .then(function(stream) {
+                        const videoElement = document.getElementById('scanner-video');
+                        videoElement.srcObject = stream;
+                    })
+                    .catch(function(err) {
+                        console.log("Error accessing webcam: ", err);
+                    });
+            }
+
+            // Configure Quagga to process the video stream
+            Quagga.init({
+                inputStream: {
+                    type: "LiveStream",
+                    target: document.querySelector('#scanner-video')  // video element
+                },
+                decoder: {
+                    readers: ["code_128_reader", "ean_reader", "ean_8_reader", "upc_reader", "upc_e_reader", "code_39_reader", "codabar_reader"]
+                },
+                locator: {
+                    patchSize: "medium",
+                    halfSample: true
+                },
+                frequency: 10, // Limit scanning to every 10 frames
+                numOfWorkers: 4  // Use 4 workers for parallel processing
+            }, function(err) {
+                if (err) {
+                    console.log(err);
+                    return;
+                }
+                Quagga.start(); // Start scanning
+            });
+
+            // Listen for barcode detection
+            Quagga.onDetected(function(result) {
+                // Display the detected barcode result
+                document.getElementById('barcode-result').innerText = result.codeResult.code;
+            });
+        }
+
+        // Initialize the barcode scanner when the page is ready
+        window.onload = function() {
+            initScanner();
+        };
+    </script>
+
+</body>
+</html>
